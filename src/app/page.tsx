@@ -8,12 +8,10 @@ interface fetchProps {
   query: string;
 }
 
-interface imageTypes {
-  url: string;
-}
-
 interface imagesProps {
-  images: imageTypes[];
+  fixed_width: {
+    url: string;
+  };
 }
 
 interface dataProps {
@@ -25,7 +23,7 @@ interface dataProps {
 export default function Home() {
   const [search, setSearch] = useState('');
   const [offset, setOffset] = useState(0);
-  const [data, setData] = useState<dataProps>();
+  const [data, setData] = useState<dataProps[]>([]);
 
   const SEARCH_LIMIT = 20;
   const OFFSET_INCREASE = 20;
@@ -37,11 +35,7 @@ export default function Home() {
       .then((response) => {
         return response.json();
       })
-      .then((data) =>
-        offset > 0
-          ? setData((prev) => [...prev, ...data.data])
-          : setData(data.data)
-      );
+      .then((data) => setData((prev) => [...prev, ...data.data]));
   };
 
   const increaseOffset = () => {
@@ -51,6 +45,7 @@ export default function Home() {
   const clearSearch = () => {
     setSearch('');
     setData([]);
+    setOffset(0);
   };
 
   useEffect(() => {
